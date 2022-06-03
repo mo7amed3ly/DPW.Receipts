@@ -16,21 +16,44 @@ namespace DPW.Receipts.API.Controllers
         }
 
         [HttpPost("upload")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status415UnsupportedMediaType)]
         public async Task<IActionResult> Post(IFormFile file)
         {
             var ext = Path.GetExtension(file.FileName).ToLower();
             if (ext != ".csv")
             {
-                return new UnsupportedMediaTypeResult();
+                return StatusCode(400,
+                    new ProblemDetails{ Detail=$"{ext} is not supported", Status=400}
+                    );
             }
-            var receipts = new List<Receipt>();
-            using (var stream = new MemoryStream())
+            ReceiptModel receipt =new ReceiptModel();
+            try
             {
-                file.CopyTo(stream);
-                stream.Seek(0, SeekOrigin.Begin);
-                receipts = FileProcessor.ReadCsv(stream);
+                var receipts = new List<Receipt>();
+                using (var stream = new MemoryStream())
+                {
+                    file.CopyTo(stream);
+                    stream.Seek(0, SeekOrigin.Begin);
+                    receipts = FileProcessor.ReadCsv(stream);
+                }
+                 receipt = ReceiptAggregation(receipts);
             }
-            ReceiptModel receipt = ReceiptAggregation(receipts);
+            catch (CsvHelper.BadDataException)
+            {
+                return BadRequest(
+                    new ProblemDetails { Detail = $"The file is not in the correct format", Status = 415 }
+                    );
+            }
+            catch (Exception)
+            {
+
+                return StatusCode(500,
+                    new ProblemDetails { Detail = $"Unexpected server error", Status = 500 }
+                    );
+            }
+            
             return Ok(receipt);
 
         }
