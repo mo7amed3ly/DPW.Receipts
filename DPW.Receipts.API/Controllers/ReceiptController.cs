@@ -8,19 +8,12 @@ namespace DPW.Receipts.API.Controllers
 {
     [Authorize]
     [ApiController]
-    [Route("[controller]")]
+    //[Route("[controller]")]
+    [Route("api/[controller]")]
     public class ReceiptController : ControllerBase
-    {
-        private static readonly string[] Summaries = new[]
-        {
-        "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-    };
-
-        private readonly ILogger<ReceiptController> _logger;
-
-        public ReceiptController(ILogger<ReceiptController> logger)
-        {
-            _logger = logger;
+    {     
+        public ReceiptController()
+        {            
         }
 
         [HttpPost("upload")]
