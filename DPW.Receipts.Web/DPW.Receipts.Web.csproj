@@ -10,8 +10,4 @@
     <ProjectReference Include="..\DPW.Receipts.Core\DPW.Receipts.Core.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Files\CSV\" />
-  </ItemGroup>
-
 </Project>
