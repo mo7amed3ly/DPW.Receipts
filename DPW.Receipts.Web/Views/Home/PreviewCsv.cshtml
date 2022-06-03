@@ -1,0 +1,48 @@
+﻿@using System.Data
+@model System.Data.DataTable
+
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <a class="nav-link disabled"  href="#">Upload CSV</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link active" href="#"  aria-current="page">Data Preview</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link disabled" href="#"  aria-disabled="true">Export Excel</a>
+  </li>
+  @*<li class="nav-item">
+    <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+  </li>*@
+</ul>
+<table id="example" class="display" style="width:100%">
+    <thead>
+        <tr>
+            @foreach (DataColumn colmun in Model.Columns)
+            {
+                <td>@colmun.ColumnName</td>
+            }
+        </tr>
+    </thead>
+    @foreach (DataRow row in Model.Rows)
+    {
+        <tr>
+            @foreach (DataColumn column in Model.Columns)
+            {
+                <td>@row[column.ColumnName]</td>
+            }
+        </tr>
+    }
+</table>
+<a asp-action="ExportExcel">Export Excel</a>
+@section Scripts{
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.23/js/jquery.dataTables.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#example').DataTable({
+        scrollX: true,
+    });
+        });
+        
+    </script>
+}

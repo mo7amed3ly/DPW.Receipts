@@ -1,0 +1,24 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <a class="nav-link active" aria-current="page" href="#">Upload CSV</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link disabled" href="#"  aria-disabled="true">Data Preview</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link disabled" href="#"  aria-disabled="true">Export Excel</a>
+  </li>
+  @*<li class="nav-item">
+    <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+  </li>*@
+</ul>
+
+
+    <form asp-action="UploadCsv" asp-controller="Home" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" />
+        <button id="btnUpload">Upload</button>
+    </form>
