@@ -8,7 +8,6 @@ namespace DPW.Receipts.API.Controllers
 {
     [Authorize]
     [ApiController]
-    //[Route("[controller]")]
     [Route("api/[controller]")]
     public class ReceiptController : ControllerBase
     {     
@@ -24,13 +23,20 @@ namespace DPW.Receipts.API.Controllers
             {
                 return new UnsupportedMediaTypeResult();
             }
-            var receipts=new List<Receipt>();
+            var receipts = new List<Receipt>();
             using (var stream = new MemoryStream())
             {
                 file.CopyTo(stream);
                 stream.Seek(0, SeekOrigin.Begin);
                 receipts = FileProcessor.ReadCsv(stream);
             }
+            ReceiptModel receipt = ReceiptAggregation(receipts);
+            return Ok(receipt);
+
+        }
+
+        private static ReceiptModel ReceiptAggregation(List<Receipt> receipts)
+        {
             var group = receipts.GroupBy(r => new { r.BusinessUnit, r.ReceiptMethodID });
             var receipt = new ReceiptModel();
             foreach (var item in group)
@@ -47,8 +53,8 @@ namespace DPW.Receipts.API.Controllers
                 });
                 break;
             }
-            return Ok(receipt);
-             
+
+            return receipt;
         }
     }
 }
