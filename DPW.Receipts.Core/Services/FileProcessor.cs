@@ -11,10 +11,9 @@ namespace DPW.Receipts.Core.Services
 {
     public class FileProcessor
     {
-        public static List<Receipt> ReadCsv(Stream stream)
+        public static List<T> ReadCsv<T, TMap>(Stream stream) where TMap : ClassMap
         {
-
-            List<Receipt> records = new List<Receipt>();
+            List<T> records = new List<T>();
             var config = new CsvConfiguration(CultureInfo.InvariantCulture)
             {
                 PrepareHeaderForMatch = args => args.Header.Replace(" ", "").ToLowerInvariant(),
@@ -23,36 +22,28 @@ namespace DPW.Receipts.Core.Services
             using (var reader = new StreamReader(stream))
             using (var csv = new CsvReader(reader, config))
             {
-                csv.Context.RegisterClassMap<ReceiptMap>();
+                csv.Context.RegisterClassMap<TMap>();
 
-                records = csv.GetRecords<Receipt>().ToList();
+                records = csv.GetRecords<T>().ToList();
             }
             return records;
         }
-        public static List<Receipt> ReadCsv(string filePath)
+        public static List<T> ReadCsv<T, TMap>(string filePath) where TMap : ClassMap
         {
 
-            List<Receipt> records = new List<Receipt>();
-            var config = new CsvConfiguration(CultureInfo.InvariantCulture)
+            List<T> records = new List<T>();            
+            using (var reader = new FileStream(filePath,FileMode.Open))
             {
-                PrepareHeaderForMatch = args => args.Header.Replace(" ", "").ToLowerInvariant(),
-            };
-
-            using (var reader = new StreamReader(filePath))
-            using (var csv = new CsvReader(reader, config))
-            {
-                csv.Context.RegisterClassMap<ReceiptMap>();
-
-                records = csv.GetRecords<Receipt>().ToList();
+                records = ReadCsv<T, TMap>(reader);
             }
             return records;
         }
-        public static void ExportExcel(List<Receipt> receipts, string filePath)
+        public static void ExportExcel<T>(List<T> items, string filePath)
         {
 
             using (XLWorkbook wb = new XLWorkbook())
             {
-                wb.AddWorksheet("Receipts").FirstCell().InsertTable(receipts, false);
+                wb.AddWorksheet("Data").FirstCell().InsertTable(items, false);
                 wb.SaveAs(filePath);
             }
         }

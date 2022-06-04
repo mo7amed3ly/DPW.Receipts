@@ -36,7 +36,7 @@ namespace DPW.Receipts.API.Controllers
                 {
                     file.CopyTo(stream);
                     stream.Seek(0, SeekOrigin.Begin);
-                    receipts = FileProcessor.ReadCsv(stream);
+                    receipts = FileProcessor.ReadCsv<Receipt, ReceiptMap>(stream);
                 }
                  receipt = ReceiptAggregation(receipts);
             }

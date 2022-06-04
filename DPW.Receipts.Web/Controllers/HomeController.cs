@@ -52,7 +52,7 @@ namespace DPW.Receipts.Web.Controllers
             try
             {
                 string filePath = TempData.Peek("filePath").ToString();
-                List<Receipt> receipts = FileProcessor.ReadCsv(filePath);
+                List<Receipt> receipts = FileProcessor.ReadCsv<Receipt, ReceiptMap>(filePath);
                 dataTable = FileProcessor.GetDataTable(receipts);
             }
             catch (Exception )
@@ -69,7 +69,7 @@ namespace DPW.Receipts.Web.Controllers
             try
             {
                 string filePath = TempData.Peek("filePath").ToString();
-                List<Receipt> receipts = FileProcessor.ReadCsv(filePath);
+                List<Receipt> receipts = FileProcessor.ReadCsv<Receipt, ReceiptMap>(filePath);
                 var excelFilePath = filePath.Replace(".csv", ".xlsx");
                 FileProcessor.ExportExcel(receipts, excelFilePath);
                 var excelwebPath = excelFilePath.Replace(_hostingEnvironment.WebRootPath, "").Replace(@"\", "/");
